@@ -17,6 +17,7 @@ public record WorkerConfig(
     private static final String SUBSCRIPTION_ID = "asphalt_legend_windows";
     private static final Path RESET_SCRIPT = script("reset.ps1");
     private static final Path REFILL_ADS_SCRIPT = script("refill-ads.ps1");
+    private static final Path START_GAME_SCRIPT = script("start-game.ps1");
     private static final Duration SCRIPT_TIMEOUT = Duration.ofMinutes(10);
 
     public static WorkerConfig windowsDefaults() {
@@ -24,7 +25,8 @@ public record WorkerConfig(
                 ProjectSubscriptionName.of(PROJECT_ID, SUBSCRIPTION_ID),
                 Map.of(
                         TaskType.RESET, RESET_SCRIPT,
-                        TaskType.REFILL_ADS, REFILL_ADS_SCRIPT
+                        TaskType.REFILL_ADS, REFILL_ADS_SCRIPT,
+                        TaskType.START_GAME, START_GAME_SCRIPT
                 ),
                 SCRIPT_TIMEOUT
         );

@@ -25,6 +25,7 @@ class TaskMessageParserTest {
                 new TaskCommand(TaskType.REFILL_ADS, 8),
                 parse("{\"type\":\"REFILL_ADS\"}")
         );
+        assertEquals(TaskCommand.startGame(), parse("{\"type\":\"START_GAME\"}"));
     }
 
     @Test
@@ -32,6 +33,7 @@ class TaskMessageParserTest {
         assertThrows(IOException.class, () -> parse("{\"type\":\"DELETE_ALL\"}"));
         assertThrows(IOException.class, () -> parse("{\"type\":\"RESET\",\"command\":\"evil\"}"));
         assertThrows(IOException.class, () -> parse("{\"type\":\"RESET\",\"repeat\":8}"));
+        assertThrows(IOException.class, () -> parse("{\"type\":\"START_GAME\",\"repeat\":8}"));
         assertThrows(IOException.class, () -> parse("{\"type\":\"REFILL_ADS\",\"repeat\":0}"));
         assertThrows(IOException.class, () -> parse("{\"type\":\"REFILL_ADS\",\"repeat\":100}"));
         assertThrows(IOException.class, () -> parse("{}"));

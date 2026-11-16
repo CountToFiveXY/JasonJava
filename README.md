@@ -20,8 +20,15 @@ Refill publishes one message with a validated repeat count:
 {"type":"REFILL_ADS","repeat":8}
 ```
 
-The worker supports `RESET` and `REFILL_ADS`. The message never supplies a path
-or command; each task maps to a repository PowerShell script in `WorkerConfig`.
+Start game publishes:
+
+```json
+{"type":"START_GAME"}
+```
+
+The worker supports `RESET`, `REFILL_ADS`, and `START_GAME`. The message never
+supplies a path or command; each task maps to a repository PowerShell script in
+`WorkerConfig`.
 
 ## Code layout
 
@@ -35,6 +42,8 @@ The reset logic lives in `scripts/reset.ps1`. `REFILL_ADS` launches
 The script runs `scripts/exe/refill_1_ad.exe` that many times sequentially,
 waiting for each run to finish and pausing one second between runs.
 A failed run stops the task. Compile the EXE to play one ad per launch.
+`START_GAME` launches `scripts/start-game.ps1`, which runs
+`scripts/exe/pre_ad.exe` once and waits for it to finish.
 
 ## Prerequisites
 

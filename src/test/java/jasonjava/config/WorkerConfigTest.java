@@ -27,6 +27,10 @@ class WorkerConfigTest {
                 Path.of("scripts", "refill-ads.ps1").toAbsolutePath().normalize(),
                 config.scripts().get(TaskType.REFILL_ADS)
         );
+        assertEquals(
+                Path.of("scripts", "start-game.ps1").toAbsolutePath().normalize(),
+                config.scripts().get(TaskType.START_GAME)
+        );
         assertTrue(config.scripts().values().stream().allMatch(path -> path.toFile().isFile()));
         assertEquals(Duration.ofMinutes(10), config.scriptTimeout());
     }

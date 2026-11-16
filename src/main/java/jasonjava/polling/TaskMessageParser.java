@@ -19,13 +19,21 @@ public final class TaskMessageParser {
         if (message.type() == null) {
             throw new IOException("Task message is missing type");
         }
-        if (message.type() == TaskType.RESET) {
-            if (message.repeat() != null) {
-                throw new IOException("RESET does not support repeat");
-            }
-            return TaskCommand.reset();
-        }
+        return switch (message.type()) {
+            case RESET -> withoutRepeat(message, TaskCommand.reset());
+            case START_GAME -> withoutRepeat(message, TaskCommand.startGame());
+            case REFILL_ADS -> refillAds(message);
+        };
+    }
 
+    private TaskCommand withoutRepeat(TaskMessage message, TaskCommand command) throws IOException {
+        if (message.repeat() != null) {
+            throw new IOException(message.type() + " does not support repeat");
+        }
+        return command;
+    }
+
+    private TaskCommand refillAds(TaskMessage message) throws IOException {
         int repeat = message.repeat() == null ? 8 : message.repeat();
         if (repeat < 1 || repeat > 99) {
             throw new IOException("REFILL_ADS repeat must be between 1 and 99");

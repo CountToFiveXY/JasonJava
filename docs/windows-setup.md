@@ -126,6 +126,14 @@ The second task can be tested with:
 
 This runs `scripts\refill-ads.ps1` once with `-Repeat 8`.
 
+Start game can be tested with:
+
+```json
+{"type":"START_GAME"}
+```
+
+This runs `scripts\start-game.ps1`, which launches `scripts\exe\pre_ad.exe` once.
+
 ## 7. Check logs
 
 Logs are written automatically to:
