@@ -17,8 +17,16 @@ if not exist "%GOOGLE_APPLICATION_CREDENTIALS%" (
   exit /b 1
 )
 
-echo Building JasonJava...
-call mvn -q -DskipTests package
+echo Stopping any existing JasonJava worker...
+powershell.exe -NoLogo -NoProfile -NonInteractive -ExecutionPolicy Bypass -File "%~dp0scripts\stop-worker.ps1"
+if errorlevel 1 (
+  echo Could not stop the existing worker. Startup cancelled.
+  pause
+  exit /b 1
+)
+
+echo Building JasonJava from the current repository checkout...
+call mvn -q -DskipTests clean package
 if errorlevel 1 (
   echo Build failed.
   pause
