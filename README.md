@@ -4,10 +4,6 @@ JasonJava is the small Windows worker for JasonApp. It pulls one-shot commands
 from Google Cloud Pub/Sub and runs a configured local script for each supported
 task.
 
-Recorded Macro Recorder `.mcr` files belong in the repository's `macrofiles/`
-directory. They are kept outside `src/` because they are runtime assets rather
-than Java source files.
-
 Additional setup, integration, and operational documentation belongs in
 `docs/`. Start with the complete [Windows setup and operations
 guide](docs/windows-setup.md).
@@ -18,21 +14,17 @@ The message contract matches the JasonPython `/v1/asphalt-tasks` endpoint:
 {"type":"RESET"}
 ```
 
-Supported task types are `RESET` and `REFILL_ADS`. The message never supplies a
-path or command; each type is mapped to a local file through environment
-variables.
+The worker supports `RESET` and `REFILL_ADS`. The message never supplies a path
+or command; each task maps to a repository PowerShell script in `WorkerConfig`.
 
 ## Code layout
 
-- `jasonjava.config` validates environment configuration.
+- `jasonjava.config` contains the fixed Windows worker settings.
 - `jasonjava.polling` contains the Pub/Sub message parser and receiver.
 - `jasonjava.handler` maps allowed task types to local actions.
 - `jasonjava.execution` launches supported Windows scripts and executables.
-- `jasonjava.macro` contains the imported macro generators.
-- `jasonjava.macro.utils` keeps their file utilities isolated.
 
-`RESET` is intentionally restricted to a `.ps1` PowerShell script.
-`REFILL_ADS` runs the generated Macro Recorder launcher.
+Edit `scripts/reset.ps1` and `scripts/refill-ads.ps1` to add the task logic.
 
 ## Prerequisites
 
@@ -72,23 +64,15 @@ mvn clean package
 
 The runnable jar is `target/jasonjava-1.0.0-SNAPSHOT.jar`.
 
-## Configure and run on Windows
+## Run on Windows
 
-```powershell
-$env:GOOGLE_APPLICATION_CREDENTIALS = "C:\\JasonApp\\secrets\\subscriber.json"
-$env:JASON_GCP_PROJECT = "jasonapp-xm0830"
-$env:JASON_PUBSUB_SUBSCRIPTION = "asphalt_legend_windows"
-$env:JASON_RESET_SCRIPT = "C:\\Users\\ybao0\\OneDrive\\Desktop\\Macro\\reset.ps1"
-$env:JASON_REFILL_ADS_SCRIPT = "C:\\JasonApp\\JasonJava\\scripts\\refill-ads.cmd"
-$env:JASON_MACRO_RECORDER_EXE = "C:\\Program Files (x86)\\Jitbit Macro Recorder\\MacroRecorder.exe"
-$env:JASON_SCRIPT_TIMEOUT_SECONDS = "600"
+Place the subscriber key at
+`C:\JasonApp\secrets\jasonjava-subscriber.json`, save that location once with
+`setx GOOGLE_APPLICATION_CREDENTIALS`, then double-click `start-worker.cmd` in
+the repository root. It builds and starts the worker.
 
-java -jar target\\jasonjava-1.0.0-SNAPSHOT.jar
-```
-
-`.ps1`, `.bat`, `.cmd`, and `.exe` files are supported. A script runs with its
-own directory as the working directory, and its output is written to the
-worker's console.
+Each script runs with the `scripts` directory as its working directory, and its
+output is written to the worker's console.
 
 The worker processes only one message at a time. It acknowledges a message
 after the script exits with code `0`; a timeout or non-zero exit is negatively
@@ -98,8 +82,7 @@ logged and acknowledged without execution.
 
 ## Run continuously
 
-Use Windows Task Scheduler with **Run only when user is logged on**. Traditional
-Windows services cannot control the interactive desktop used by Macro Recorder.
-The [Windows guide](docs/windows-setup.md) shows how to run `javaw.exe` hidden,
-limit its heap, rotate logs, and restart it automatically. Do not commit the
+Use Windows Task Scheduler to launch the worker at logon. The [Windows
+guide](docs/windows-setup.md) shows how to run `javaw.exe` hidden, limit its
+heap, rotate logs, and restart it automatically. Do not commit the
 service-account key or place it beside the jar in a shared directory.

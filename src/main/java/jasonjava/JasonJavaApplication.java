@@ -20,7 +20,7 @@ public final class JasonJavaApplication {
 
     public static void main(String[] args) {
         try {
-            WorkerConfig config = WorkerConfig.fromEnvironment(System.getenv());
+            WorkerConfig config = WorkerConfig.windowsDefaults();
             config.scripts().values().forEach(WindowsScriptExecutor::commandFor);
             TaskHandler handler = new TaskHandler(
                     config.scripts(),

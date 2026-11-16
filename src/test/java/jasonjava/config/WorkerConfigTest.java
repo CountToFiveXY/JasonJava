@@ -1,48 +1,33 @@
 package jasonjava.config;
 
+import com.google.pubsub.v1.ProjectSubscriptionName;
 import jasonjava.handler.TaskType;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.io.TempDir;
 
-import java.nio.file.Files;
 import java.nio.file.Path;
-import java.util.HashMap;
-import java.util.Map;
+import java.time.Duration;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 class WorkerConfigTest {
-    @TempDir
-    Path temporaryDirectory;
-
     @Test
-    void requiresResetToBeAPowerShellScript() throws Exception {
-        Path reset = Files.createFile(temporaryDirectory.resolve("reset.ps1"));
-        Path refill = Files.createFile(temporaryDirectory.resolve("refill.cmd"));
+    void providesTheWindowsWorkerConfiguration() {
+        WorkerConfig config = WorkerConfig.windowsDefaults();
 
-        WorkerConfig config = WorkerConfig.fromEnvironment(environment(reset, refill));
-
-        assertEquals(reset, config.scripts().get(TaskType.RESET));
-        assertEquals(refill, config.scripts().get(TaskType.REFILL_ADS));
-    }
-
-    @Test
-    void rejectsANonPowerShellResetHandler() throws Exception {
-        Path reset = Files.createFile(temporaryDirectory.resolve("reset.cmd"));
-        Path refill = Files.createFile(temporaryDirectory.resolve("refill.cmd"));
-
-        assertThrows(
-                IllegalArgumentException.class,
-                () -> WorkerConfig.fromEnvironment(environment(reset, refill))
+        assertEquals(
+                ProjectSubscriptionName.of("jasonapp-xm0830", "asphalt_legend_windows"),
+                config.subscription()
         );
-    }
-
-    private Map<String, String> environment(Path reset, Path refill) {
-        Map<String, String> environment = new HashMap<>();
-        environment.put("JASON_GCP_PROJECT", "test-project");
-        environment.put("JASON_RESET_SCRIPT", reset.toString());
-        environment.put("JASON_REFILL_ADS_SCRIPT", refill.toString());
-        return environment;
+        assertEquals(
+                Path.of("scripts", "reset.ps1").toAbsolutePath().normalize(),
+                config.scripts().get(TaskType.RESET)
+        );
+        assertEquals(
+                Path.of("scripts", "refill-ads.ps1").toAbsolutePath().normalize(),
+                config.scripts().get(TaskType.REFILL_ADS)
+        );
+        assertTrue(config.scripts().values().stream().allMatch(path -> path.toFile().isFile()));
+        assertEquals(Duration.ofMinutes(10), config.scriptTimeout());
     }
 }
