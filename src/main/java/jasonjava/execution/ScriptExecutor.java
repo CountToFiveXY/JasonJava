@@ -2,7 +2,8 @@ package jasonjava.execution;
 
 import java.nio.file.Path;
 import java.time.Duration;
+import java.util.List;
 
 public interface ScriptExecutor {
-    void execute(Path script, Duration timeout) throws Exception;
+    void execute(Path script, List<String> arguments, Duration timeout) throws Exception;
 }

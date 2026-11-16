@@ -11,6 +11,7 @@ import org.junit.jupiter.api.Test;
 import java.io.IOException;
 import java.nio.file.Path;
 import java.time.Duration;
+import java.util.List;
 import java.util.Map;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -25,8 +26,26 @@ class TaskMessageReceiverTest {
         receiver(executor).receiveMessage(message("{\"type\":\"RESET\"}"), consumer);
 
         assertEquals(Path.of("reset.ps1"), executor.executed);
+        assertEquals(List.of(), executor.arguments);
+        assertEquals(1, executor.executionCount);
         assertEquals(1, consumer.acks);
         assertEquals(0, consumer.nacks);
+    }
+
+    @Test
+    void passesRefillRepeatToOneScriptProcess() {
+        RecordingExecutor executor = new RecordingExecutor(false);
+        RecordingConsumer consumer = new RecordingConsumer();
+
+        receiver(executor).receiveMessage(
+                message("{\"type\":\"REFILL_ADS\",\"repeat\":12}"),
+                consumer
+        );
+
+        assertEquals(Path.of("refill.ps1"), executor.executed);
+        assertEquals(List.of("-Repeat", "12"), executor.arguments);
+        assertEquals(1, executor.executionCount);
+        assertEquals(1, consumer.acks);
     }
 
     @Test
@@ -74,14 +93,18 @@ class TaskMessageReceiverTest {
     private static final class RecordingExecutor implements ScriptExecutor {
         private final boolean fail;
         private Path executed;
+        private List<String> arguments;
+        private int executionCount;
 
         private RecordingExecutor(boolean fail) {
             this.fail = fail;
         }
 
         @Override
-        public void execute(Path script, Duration timeout) throws IOException {
+        public void execute(Path script, List<String> arguments, Duration timeout) throws IOException {
             executed = script;
+            this.arguments = arguments;
+            executionCount++;
             if (fail) {
                 throw new IOException("test failure");
             }

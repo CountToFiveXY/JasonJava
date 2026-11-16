@@ -4,6 +4,7 @@ import jasonjava.execution.ScriptExecutor;
 
 import java.nio.file.Path;
 import java.time.Duration;
+import java.util.List;
 import java.util.Map;
 
 public final class TaskHandler {
@@ -17,11 +18,14 @@ public final class TaskHandler {
         this.executor = executor;
     }
 
-    public synchronized void handle(TaskType type) throws Exception {
-        Path script = scripts.get(type);
+    public synchronized void handle(TaskCommand task) throws Exception {
+        Path script = scripts.get(task.type());
         if (script == null) {
-            throw new IllegalArgumentException("No script configured for task " + type);
+            throw new IllegalArgumentException("No script configured for task " + task.type());
         }
-        executor.execute(script, timeout);
+        List<String> arguments = task.type() == TaskType.REFILL_ADS
+                ? List.of("-Repeat", Integer.toString(task.repeat()))
+                : List.of();
+        executor.execute(script, arguments, timeout);
     }
 }

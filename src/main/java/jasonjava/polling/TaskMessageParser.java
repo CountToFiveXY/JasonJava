@@ -1,5 +1,6 @@
 package jasonjava.polling;
 
+import jasonjava.handler.TaskCommand;
 import jasonjava.handler.TaskType;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
@@ -13,18 +14,33 @@ public final class TaskMessageParser {
     private final ObjectMapper objectMapper = new ObjectMapper()
             .enable(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES);
 
-    public TaskType parse(byte[] data) throws IOException {
+    public TaskCommand parse(byte[] data) throws IOException {
         TaskMessage message = objectMapper.readValue(data, TaskMessage.class);
         if (message.type() == null) {
             throw new IOException("Task message is missing type");
         }
-        return message.type();
+        if (message.type() == TaskType.RESET) {
+            if (message.repeat() != null) {
+                throw new IOException("RESET does not support repeat");
+            }
+            return TaskCommand.reset();
+        }
+
+        int repeat = message.repeat() == null ? 8 : message.repeat();
+        if (repeat < 1 || repeat > 99) {
+            throw new IOException("REFILL_ADS repeat must be between 1 and 99");
+        }
+        return new TaskCommand(TaskType.REFILL_ADS, repeat);
     }
 
-    private record TaskMessage(TaskType type) {
+    private record TaskMessage(TaskType type, Integer repeat) {
         @JsonCreator
-        private TaskMessage(@JsonProperty(value = "type", required = true) TaskType type) {
+        private TaskMessage(
+                @JsonProperty(value = "type", required = true) TaskType type,
+                @JsonProperty("repeat") Integer repeat
+        ) {
             this.type = type;
+            this.repeat = repeat;
         }
     }
 }

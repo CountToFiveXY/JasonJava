@@ -121,21 +121,23 @@ The worker should run `scripts\reset.ps1`.
 The second task can be tested with:
 
 ```json
-{"type":"REFILL_ADS"}
+{"type":"REFILL_ADS","repeat":8}
 ```
+
+This runs `scripts\refill-ads.ps1` once with `-Repeat 8`.
 
 ## 7. Check logs
 
 Logs are written automatically to:
 
 ```text
-C:\JasonApp\JasonJava\logs\jasonjava-0.log
+%USERPROFILE%\Documents\JasonApp\Logs\jasonjava-0.log
 ```
 
 Read the latest entries with:
 
 ```powershell
-Get-Content C:\JasonApp\JasonJava\logs\jasonjava-0.log -Tail 100
+Get-Content "$env:USERPROFILE\Documents\JasonApp\Logs\jasonjava-0.log" -Tail 100
 ```
 
 Look for `Running RESET` followed by `Completed RESET`.

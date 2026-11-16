@@ -1,5 +1,6 @@
 package jasonjava.polling;
 
+import jasonjava.handler.TaskCommand;
 import jasonjava.handler.TaskType;
 
 import org.junit.jupiter.api.Test;
@@ -15,18 +16,28 @@ class TaskMessageParserTest {
 
     @Test
     void parsesTheJasonAppContract() throws Exception {
-        assertEquals(TaskType.RESET, parse("{\"type\":\"RESET\"}"));
-        assertEquals(TaskType.REFILL_ADS, parse("{\"type\":\"REFILL_ADS\"}"));
+        assertEquals(TaskCommand.reset(), parse("{\"type\":\"RESET\"}"));
+        assertEquals(
+                new TaskCommand(TaskType.REFILL_ADS, 12),
+                parse("{\"type\":\"REFILL_ADS\",\"repeat\":12}")
+        );
+        assertEquals(
+                new TaskCommand(TaskType.REFILL_ADS, 8),
+                parse("{\"type\":\"REFILL_ADS\"}")
+        );
     }
 
     @Test
     void rejectsUnknownTasksAndFields() {
         assertThrows(IOException.class, () -> parse("{\"type\":\"DELETE_ALL\"}"));
         assertThrows(IOException.class, () -> parse("{\"type\":\"RESET\",\"command\":\"evil\"}"));
+        assertThrows(IOException.class, () -> parse("{\"type\":\"RESET\",\"repeat\":8}"));
+        assertThrows(IOException.class, () -> parse("{\"type\":\"REFILL_ADS\",\"repeat\":0}"));
+        assertThrows(IOException.class, () -> parse("{\"type\":\"REFILL_ADS\",\"repeat\":100}"));
         assertThrows(IOException.class, () -> parse("{}"));
     }
 
-    private TaskType parse(String json) throws Exception {
+    private TaskCommand parse(String json) throws Exception {
         return parser.parse(json.getBytes(StandardCharsets.UTF_8));
     }
 }

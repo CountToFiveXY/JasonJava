@@ -20,6 +20,14 @@ class WindowsScriptExecutorTest {
                 WindowsScriptExecutor.commandFor(script)
         );
         assertEquals(
+                List.of(
+                        "powershell.exe", "-NoLogo", "-NoProfile", "-NonInteractive",
+                        "-ExecutionPolicy", "Bypass", "-File", script.toString(),
+                        "-Repeat", "12"
+                ),
+                WindowsScriptExecutor.commandFor(script, List.of("-Repeat", "12"))
+        );
+        assertEquals(
                 List.of("C:\\Tools\\refill.exe"),
                 WindowsScriptExecutor.commandFor(Path.of("C:\\Tools\\refill.exe"))
         );

@@ -26,7 +26,14 @@ if errorlevel 1 (
 )
 
 echo Starting JasonJava...
-if not exist logs mkdir logs
+set "JASONJAVA_LOG_DIR=%USERPROFILE%\Documents\JasonApp\Logs"
+if not exist "%JASONJAVA_LOG_DIR%" mkdir "%JASONJAVA_LOG_DIR%"
+if errorlevel 1 (
+  echo Could not create log directory:
+  echo %JASONJAVA_LOG_DIR%
+  pause
+  exit /b 1
+)
 java -Xms16m -Xmx128m ^
   -Djava.util.logging.config.file=config\logging.properties ^
   -jar target\jasonjava-1.0.0-SNAPSHOT.jar

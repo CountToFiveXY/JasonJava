@@ -14,6 +14,12 @@ The message contract matches the JasonPython `/v1/asphalt-tasks` endpoint:
 {"type":"RESET"}
 ```
 
+Refill publishes one message with a validated repeat count:
+
+```json
+{"type":"REFILL_ADS","repeat":8}
+```
+
 The worker supports `RESET` and `REFILL_ADS`. The message never supplies a path
 or command; each task maps to a repository PowerShell script in `WorkerConfig`.
 
@@ -25,6 +31,7 @@ or command; each task maps to a repository PowerShell script in `WorkerConfig`.
 - `jasonjava.execution` launches supported Windows scripts and executables.
 
 Edit `scripts/reset.ps1` and `scripts/refill-ads.ps1` to add the task logic.
+The refill script is launched once with `-Repeat <1-99>`.
 
 ## Prerequisites
 
@@ -70,6 +77,9 @@ Place the subscriber key at
 `C:\JasonApp\secrets\jasonjava-subscriber.json`, save that location once with
 `setx GOOGLE_APPLICATION_CREDENTIALS`, then double-click `start-worker.cmd` in
 the repository root. It builds and starts the worker.
+
+Logs are stored outside the repository in the Windows user's
+`Documents\JasonApp\Logs` folder.
 
 Each script runs with the `scripts` directory as its working directory, and its
 output is written to the worker's console.
