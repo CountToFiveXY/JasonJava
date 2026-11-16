@@ -88,7 +88,10 @@ The runnable jar is `target/jasonjava-1.0.0-SNAPSHOT.jar`.
 Place the subscriber key at
 `C:\JasonApp\secrets\jasonjava-subscriber.json`, save that location once with
 `setx GOOGLE_APPLICATION_CREDENTIALS`, then double-click `start-worker.cmd` in
-the repository root. It builds and starts the worker.
+the repository root. It stops any existing JasonJava worker, builds the current
+checkout, and starts the worker hidden in the background using `javaw.exe`.
+The launcher closes after successful startup; closing its terminal afterward
+does not stop the worker. Startup errors leave the launcher open.
 
 Logs are stored outside the repository in the Windows user's
 `Documents\JasonApp\Logs` folder.

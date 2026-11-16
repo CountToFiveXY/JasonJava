@@ -42,9 +42,10 @@ if errorlevel 1 (
   pause
   exit /b 1
 )
-java -Xms16m -Xmx128m ^
-  -Djava.util.logging.config.file=config\logging.properties ^
-  -jar target\jasonjava-1.0.0-SNAPSHOT.jar
-
-echo JasonJava stopped.
-pause
+powershell.exe -NoLogo -NoProfile -NonInteractive -ExecutionPolicy Bypass -File "%~dp0scripts\start-worker-background.ps1"
+if errorlevel 1 (
+  echo Could not start JasonJava. Check the logs above.
+  pause
+  exit /b 1
+)
+exit /b 0
