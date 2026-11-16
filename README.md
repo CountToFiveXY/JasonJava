@@ -30,8 +30,11 @@ or command; each task maps to a repository PowerShell script in `WorkerConfig`.
 - `jasonjava.handler` maps allowed task types to local actions.
 - `jasonjava.execution` launches supported Windows scripts and executables.
 
-Edit `scripts/reset.ps1` and `scripts/refill-ads.ps1` to add the task logic.
-The refill script is launched once with `-Repeat <1-99>`.
+The reset logic lives in `scripts/reset.ps1`. `REFILL_ADS` launches
+`scripts/refill-ads.ps1` once with `-Repeat <1-99>` from the message.
+The script runs `scripts/exe/refill_1_ad.exe` that many times sequentially,
+waiting for each run to finish and pausing one second between runs.
+A failed run stops the task. Compile the EXE to play one ad per launch.
 
 ## Prerequisites
 
