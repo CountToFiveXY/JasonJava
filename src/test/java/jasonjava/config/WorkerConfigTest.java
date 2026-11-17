@@ -31,6 +31,10 @@ class WorkerConfigTest {
                 Path.of("scripts", "start-game.ps1").toAbsolutePath().normalize(),
                 config.scripts().get(TaskType.START_GAME)
         );
+        assertEquals(
+                Path.of("scripts", "close-game.ps1").toAbsolutePath().normalize(),
+                config.scripts().get(TaskType.CLOSE_GAME)
+        );
         assertTrue(config.scripts().values().stream().allMatch(path -> path.toFile().isFile()));
         assertEquals(Duration.ofMinutes(10), config.scriptTimeout());
     }

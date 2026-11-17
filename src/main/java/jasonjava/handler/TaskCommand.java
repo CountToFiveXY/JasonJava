@@ -20,4 +20,8 @@ public record TaskCommand(TaskType type, int repeat) {
     public static TaskCommand startGame() {
         return new TaskCommand(TaskType.START_GAME, 1);
     }
+
+    public static TaskCommand closeGame() {
+        return new TaskCommand(TaskType.CLOSE_GAME, 1);
+    }
 }

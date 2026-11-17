@@ -134,6 +134,15 @@ Start game can be tested with:
 
 This runs `scripts\start-game.ps1`, which launches `scripts\exe\pre_ad.exe` once.
 
+Close game can be tested with:
+
+```json
+{"type":"CLOSE_GAME"}
+```
+
+This runs `scripts\close-game.ps1`, which reuses the close and verification
+stages from `scripts\reset.ps1`.
+
 ## 7. Check logs
 
 Logs are written automatically to:

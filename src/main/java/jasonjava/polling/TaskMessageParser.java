@@ -22,6 +22,7 @@ public final class TaskMessageParser {
         return switch (message.type()) {
             case RESET -> withoutRepeat(message, TaskCommand.reset());
             case START_GAME -> withoutRepeat(message, TaskCommand.startGame());
+            case CLOSE_GAME -> withoutRepeat(message, TaskCommand.closeGame());
             case REFILL_ADS -> refillAds(message);
         };
     }

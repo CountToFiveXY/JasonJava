@@ -26,9 +26,15 @@ Start game publishes:
 {"type":"START_GAME"}
 ```
 
-The worker supports `RESET`, `REFILL_ADS`, and `START_GAME`. The message never
-supplies a path or command; each task maps to a repository PowerShell script in
-`WorkerConfig`.
+Close game publishes:
+
+```json
+{"type":"CLOSE_GAME"}
+```
+
+The worker supports `RESET`, `REFILL_ADS`, `START_GAME`, and `CLOSE_GAME`. The
+message never supplies a path or command; each task maps to a repository
+PowerShell script in `WorkerConfig`.
 
 ## Code layout
 
@@ -44,6 +50,8 @@ waiting for each run to finish and pausing one second between runs.
 A failed run stops the task. Compile the EXE to play one ad per launch.
 `START_GAME` launches `scripts/start-game.ps1`, which runs
 `scripts/exe/pre_ad.exe` once and waits for it to finish.
+`CLOSE_GAME` launches `scripts/close-game.ps1`, which reuses the safe `Close`
+and `VerifyClosed` stages from `scripts/reset.ps1`.
 
 ## Prerequisites
 
