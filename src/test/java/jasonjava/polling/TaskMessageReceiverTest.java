@@ -75,6 +75,19 @@ class TaskMessageReceiverTest {
     }
 
     @Test
+    void runsWindowScriptOnceWithoutArguments() {
+        RecordingExecutor executor = new RecordingExecutor(false);
+        RecordingConsumer consumer = new RecordingConsumer();
+
+        receiver(executor).receiveMessage(message("{\"type\":\"WINDOW\"}"), consumer);
+
+        assertEquals(Path.of("window.ps1"), executor.executed);
+        assertEquals(List.of(), executor.arguments);
+        assertEquals(1, executor.executionCount);
+        assertEquals(1, consumer.acks);
+    }
+
+    @Test
     void negativelyAcknowledgesScriptFailure() {
         RecordingExecutor executor = new RecordingExecutor(true);
         RecordingConsumer consumer = new RecordingConsumer();
@@ -103,7 +116,8 @@ class TaskMessageReceiverTest {
                         TaskType.RESET, Path.of("reset.ps1"),
                         TaskType.REFILL_ADS, Path.of("refill.ps1"),
                         TaskType.START_GAME, Path.of("start-game.ps1"),
-                        TaskType.CLOSE_GAME, Path.of("close-game.ps1")
+                        TaskType.CLOSE_GAME, Path.of("close-game.ps1"),
+                        TaskType.WINDOW, Path.of("window.ps1")
                 ),
                 Duration.ofSeconds(30),
                 executor

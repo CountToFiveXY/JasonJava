@@ -24,4 +24,8 @@ public record TaskCommand(TaskType type, int repeat) {
     public static TaskCommand closeGame() {
         return new TaskCommand(TaskType.CLOSE_GAME, 1);
     }
+
+    public static TaskCommand window() {
+        return new TaskCommand(TaskType.WINDOW, 1);
+    }
 }

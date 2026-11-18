@@ -143,6 +143,15 @@ Close game can be tested with:
 This runs `scripts\close-game.ps1`, which reuses the close and verification
 stages from `scripts\reset.ps1`.
 
+Window can be tested with:
+
+```json
+{"type":"WINDOW"}
+```
+
+This runs the placeholder `scripts\window.ps1`. Replace
+`scripts\exe\window.exe` with the compiled executable when it is ready.
+
 ## 7. Check logs
 
 Logs are written automatically to:
