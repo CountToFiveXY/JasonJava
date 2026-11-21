@@ -28,4 +28,8 @@ public record TaskCommand(TaskType type, int repeat) {
     public static TaskCommand window() {
         return new TaskCommand(TaskType.WINDOW, 1);
     }
+
+    public static TaskCommand mute() {
+        return new TaskCommand(TaskType.MUTE, 1);
+    }
 }

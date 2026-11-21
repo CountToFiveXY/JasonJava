@@ -39,6 +39,10 @@ class WorkerConfigTest {
                 Path.of("scripts", "window.ps1").toAbsolutePath().normalize(),
                 config.scripts().get(TaskType.WINDOW)
         );
+        assertEquals(
+                Path.of("scripts", "mute.ps1").toAbsolutePath().normalize(),
+                config.scripts().get(TaskType.MUTE)
+        );
         assertTrue(config.scripts().values().stream().allMatch(path -> path.toFile().isFile()));
         assertEquals(Duration.ofMinutes(10), config.scriptTimeout());
     }

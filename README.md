@@ -38,9 +38,15 @@ Window publishes:
 {"type":"WINDOW"}
 ```
 
+Mute publishes:
+
+```json
+{"type":"MUTE"}
+```
+
 The worker supports `RESET`, `REFILL_ADS`, `START_GAME`, `CLOSE_GAME`, and
-`WINDOW`. The message never supplies a path or command; each task maps to a
-repository PowerShell script in `WorkerConfig`.
+`WINDOW`, and `MUTE`. The message never supplies a path or command; each task
+maps to a repository PowerShell script in `WorkerConfig`.
 
 ## Code layout
 
@@ -60,6 +66,8 @@ A failed run stops the task. Compile the EXE to play one ad per launch.
 and `VerifyClosed` stages from `scripts/reset.ps1`.
 `WINDOW` launches the placeholder `scripts/window.ps1`; replace
 `scripts/exe/window.exe` and fill in the execution logic later.
+`MUTE` launches `scripts/mute.ps1`. If audio is active it mutes the default
+playback device; if already muted it restores the volume to 35% and unmutes.
 
 ## Prerequisites
 

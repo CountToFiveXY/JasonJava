@@ -24,6 +24,7 @@ public final class TaskMessageParser {
             case START_GAME -> withoutRepeat(message, TaskCommand.startGame());
             case CLOSE_GAME -> withoutRepeat(message, TaskCommand.closeGame());
             case WINDOW -> withoutRepeat(message, TaskCommand.window());
+            case MUTE -> withoutRepeat(message, TaskCommand.mute());
             case REFILL_ADS -> refillAds(message);
         };
     }

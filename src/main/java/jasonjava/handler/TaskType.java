@@ -5,5 +5,6 @@ public enum TaskType {
     REFILL_ADS,
     START_GAME,
     CLOSE_GAME,
-    WINDOW
+    WINDOW,
+    MUTE
 }

@@ -152,6 +152,15 @@ Window can be tested with:
 This runs the placeholder `scripts\window.ps1`. Replace
 `scripts\exe\window.exe` with the compiled executable when it is ready.
 
+Mute can be tested with:
+
+```json
+{"type":"MUTE"}
+```
+
+This toggles the default playback device: active audio becomes muted; muted
+audio is restored to 35% and unmuted.
+
 ## 7. Check logs
 
 Logs are written automatically to:

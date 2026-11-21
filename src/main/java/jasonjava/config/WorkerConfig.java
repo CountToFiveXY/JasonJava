@@ -20,6 +20,7 @@ public record WorkerConfig(
     private static final Path START_GAME_SCRIPT = script("start-game.ps1");
     private static final Path CLOSE_GAME_SCRIPT = script("close-game.ps1");
     private static final Path WINDOW_SCRIPT = script("window.ps1");
+    private static final Path MUTE_SCRIPT = script("mute.ps1");
     private static final Duration SCRIPT_TIMEOUT = Duration.ofMinutes(10);
 
     public static WorkerConfig windowsDefaults() {
@@ -30,7 +31,8 @@ public record WorkerConfig(
                         TaskType.REFILL_ADS, REFILL_ADS_SCRIPT,
                         TaskType.START_GAME, START_GAME_SCRIPT,
                         TaskType.CLOSE_GAME, CLOSE_GAME_SCRIPT,
-                        TaskType.WINDOW, WINDOW_SCRIPT
+                        TaskType.WINDOW, WINDOW_SCRIPT,
+                        TaskType.MUTE, MUTE_SCRIPT
                 ),
                 SCRIPT_TIMEOUT
         );
